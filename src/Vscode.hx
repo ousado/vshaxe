@@ -129,17 +129,17 @@ typedef TextDocument = {
 };
 @:jsRequire("vscode", "Position")
 extern class Position {
-	var line : Float;
-	var character : Float;
-	function new(line:Float, character:Float):Void;
+	var line : Int;
+	var character : Int;
+	function new(line:Int, character:Int):Void;
 	function isBefore(other:Position):Bool;
 	function isBeforeOrEqual(other:Position):Bool;
 	function isAfter(other:Position):Bool;
 	function isAfterOrEqual(other:Position):Bool;
 	function isEqual(other:Position):Bool;
-	function compareTo(other:Position):Float;
-	function translate(?lineDelta:Float, ?characterDelta:Float):Position;
-	function with(?line:Float, ?character:Float):Position;
+	function compareTo(other:Position):Int;
+	function translate(?lineDelta:Int, ?characterDelta:Int):Position;
+	function with(?line:Int, ?character:Int):Position;
 }
 @:jsRequire("vscode", "Range")
 extern class Range {

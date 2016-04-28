@@ -42,6 +42,11 @@
                 "title": "Initialize VS Code project",
                 "command": "haxe.initProject",
                 "category": "Haxe"
+            },
+            {
+                "title": "Generate import",
+                "command": "haxe.generateImport",
+                "category": "Haxe"
             }
         ],
         "languages": [

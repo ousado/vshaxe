@@ -11,6 +11,7 @@ class Main {
         context.subscriptions.push(Vscode.commands.registerCommand("haxe.restartLanguageServer", restartLanguageServer));
         context.subscriptions.push(Vscode.commands.registerCommand("haxe.initProject", initProject));
         context.subscriptions.push(Vscode.commands.registerCommand("haxe.applyFixes", applyFixes));
+        context.subscriptions.push(Vscode.commands.registerTextEditorCommand("haxe.generateImport", generateImport));
         startLanguageServer();
     }
 
@@ -146,6 +147,33 @@ class Main {
         channel.clear();
         channel.append(content);
         channel.show();
+    }
+
+    static var reEndsWithQualifiedPath = ~/\s*((?:\w+\.)*\w+)$/;
+
+    function generateImport(editor:TextEditor, edit:TextEditorEdit) {
+        if (editor.document.languageId != "haxe")
+            return;
+
+        if (!editor.selection.isEmpty) // we just need a cursor position, we don't know what to do with selected text
+            return;
+
+        var doc = editor.document;
+        var pos = editor.selection.start;
+
+        var wordRange = doc.getWordRangeAtPosition(pos);
+        if (wordRange == null) // we should be on a word
+            return;
+
+        var textToCursor = doc.lineAt(pos).text.substring(0, wordRange.end.character);
+        if (!reEndsWithQualifiedPath.match(textToCursor)) // that doesn't look like a qualified path
+            return;
+
+        // oh it does! extract whatever we think is a qualified path
+        var qualifiedPath = reEndsWithQualifiedPath.matched(1);
+        var parts = qualifiedPath.split(".");
+
+        // TO BE CONTINUED
     }
 
     function copyRec(from:String, to:String):Void {

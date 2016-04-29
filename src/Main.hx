@@ -48,6 +48,19 @@ class Main {
         var client = new LanguageClient("Haxe", serverOptions, clientOptions);
         client.onReady().then(function(_) {
             Vscode.window.setStatusBarMessage("Haxe language server started", 2000);
+
+            var watcher = Vscode.workspace.createFileSystemWatcher("**/*.hx", false, true, true);
+            context.subscriptions.push(watcher.onDidCreate(function(uri) {
+                var editor = Vscode.window.activeTextEditor;
+                if (editor == null || editor.document.uri.fsPath != uri.fsPath) return;
+                client.sendRequest({method: "haxe/calculatePackage"}, uri.fsPath).then(function(pack:String) {
+                    if (pack == "")
+                        return;
+                    editor.edit(function(edit) edit.insert(new Position(0, 0), 'package $pack;\n'));
+                });
+            }));
+            context.subscriptions.push(watcher);
+
         });
         serverDisposable = client.start();
         context.subscriptions.push(serverDisposable);

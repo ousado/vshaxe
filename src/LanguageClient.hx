@@ -8,9 +8,12 @@ extern class LanguageClient {
     function new(name:String, serverOptions:ServerOptions, languageOptions:LanguageClientOptions, ?forceDebug:Bool);
     function start():Disposable;
     function stop():Void;
-    function onNotification(type:{method:String}, handler:Dynamic->Void):Void;
+    function onNotification(type:RequestType, handler:Dynamic->Void):Void;
     function onReady():Promise<Void>;
+    function sendRequest(type:RequestType, params:Dynamic):Thenable<Dynamic>;
 }
+
+typedef RequestType = {method:String}
 
 @:enum abstract TransportKind(Int) {
     var stdio = 0;
